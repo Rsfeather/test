@@ -31,24 +31,46 @@ public class UsersServlet extends HttpServlet {
             ArrayList<User> users = UserDB.selectUsers();            
 
             // set as a request attribute
+            request.setAttribute("users", users);
             // forward to index.jsp
+            url = "/index.jsp";
         } 
         else if (action.equals("display_user")) {
             // get user for specified email
+            String email = request.getParameter("email");
+            User user = UserDB.selectUser(email);
             // set as session attribute
+            session.setAttribute("user",user);
             // forward to user.jsp
+            url = "/user.jsp";
         }
         else if (action.equals("update_user")) {
             // update user in database
+            String firstName = request.getParameter("firstName");
+            String lastName = request.getParameter("lastName");
+            User user =(User) session.getAttribute("user");
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            UserDB.update(user);
+            ArrayList<User> users = UserDB.selectUsers();
+            request.setAttribute("users",users);
             // get current user list and set as request attribute
             // forward to index.jsp
+            url="/index.jsp";
         }
         else if (action.equals("delete_user")) {
+            String email = request.getParameter("email");
+            User user = UserDB.selectUser(email);
+            UserDB.delete(user);
+            ArrayList<User> users = UserDB.selectUsers();
+            request.setAttribute("users", users);
             // get the user for the specified email
+            
             // delete the user            
             // get current list of users
             // set as request attribute
             // forward to index.jsp
+            url="/index.jsp";
         }
         
         getServletContext()
